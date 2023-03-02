@@ -1,10 +1,21 @@
 from django.urls import path
 
-from .views import books, edit_book, delete_book, create_book
+from .views import ProductView, ProductDetailView, CategoryView, CategoryDetailView, ManufacturerView, ManufacturerDetailView
 
 urlpatterns = [
-    path("books/", books, name="books"),
-    path("books/create/", create_book, name="create_book"),
-    path("books/edit/<int:pk>/", edit_book, name="edit_book"),
-    path("books/delete/<int:pk>/", delete_book, name="delete_book"),
+    path('product-list/', ProductView.as_view(), name="product-list"),
+    path('product-detail/<str:pk>/', ProductDetailView.as_view(), name="product-detail"),
+    path('product-create/', ProductView.as_view(), name="product-create"),
+    path('product-update/<str:pk>/', ProductDetailView.as_view(), name="product-update"),
+    path('product-delete/<str:pk>/', ProductDetailView.as_view(), name="product-delete"),
+    path('category-list/', CategoryView.as_view(), name="category-list"),
+    path('category-detail/<str:pk>/', CategoryDetailView.as_view(), name="category-detail"),
+    path('category-create/', CategoryView.as_view(), name="category-create"),
+    path('category-update/<str:pk>/', CategoryDetailView.as_view(), name="category-update"),
+    path('category-delete/<str:pk>/', CategoryDetailView.as_view(), name="category-delete"),
+    path('manufacturer-list/', ManufacturerView.as_view(), name="manufacturer-list"),
+    path('manufacturer-detail/<str:pk>/', ManufacturerDetailView.as_view(), name="manufacturer-detail"),
+    path('manufacturer-create/', ManufacturerView.as_view(), name="manufacturer-create"),
+    path('manufacturer-update/<str:pk>/', ManufacturerDetailView.as_view(), name="manufacturer-update"),
+    path('manufacturer-delete/<str:pk>/', ManufacturerDetailView.as_view(), name="manufacturer-delete"),
 ]
