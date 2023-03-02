@@ -3,11 +3,121 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import ManufacturerSerializer, ProductSerializer, CategorySerializer
-from .models import Manufacturer, Product, Category
+from .serializers import CartSerializer, CartItemSerializer, ProductSerializer
+from .models import Cart, CartItem, Product
+from .forms import CartForm, ProductForm, CartItemForm
+
+
+class CartView(APIView):
+    def get(self, request: WSGIRequest, pk: int):
+        cart = Cart.objects.get(pk=pk)
+        serializer = CartSerializer(cart)
+        return Response(serializer.data)
+
+    def post(self, request: WSGIRequest):
+        serializer = CartSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request: WSGIRequest, pk: int):
+        cart = Cart.objects.get(pk=pk)
+        serializer = CartSerializer(cart, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request: WSGIRequest, pk: int):
+        cart = Cart.objects.get(pk=pk)
+        cart.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CartItemView(APIView):
+    def get(self, request: WSGIRequest, pk: int):
+        cart_item = CartItem.objects.get(pk=pk)
+        serializer = CartItemSerializer(cart_item)
+        return Response(serializer.data)
+
+    def post(self, request: WSGIRequest):
+        serializer = CartItemSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request: WSGIRequest, pk: int):
+        cart_item = CartItem.objects.get(pk=pk)
+        serializer = CartItemSerializer(cart_item, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request: WSGIRequest, pk: int):
+        cart_item = CartItem.objects.get(pk=pk)
+        cart_item.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ProductView(APIView):
+    def get(self, request: WSGIRequest, pk: int):
+        product = Product.objects.get(pk=pk)
+        serializer = ProductSerializer(product)
+        return Response(serializer.data)
+
+    def post(self, request: WSGIRequest):
+        serializer = ProductSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request: WSGIRequest, pk: int):
+        product = Product.objects.get(pk=pk)
+        serializer = ProductSerializer(product, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request: WSGIRequest, pk: int):
+        product = Product.objects.get(pk=pk)
+        product.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CartItemList(APIView):
+    def get(self, request: WSGIRequest):
+        cart_items = CartItem.objects.all()
+        serializer = CartItemSerializer(cart_items, many=True)
+        return Response(serializer.data)
+
+    def post(self, request: WSGIRequest):
+        serializer = CartItemSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CartList(APIView):
+    def get(self, request: WSGIRequest):
+        carts = Cart.objects.all()
+        serializer = CartSerializer(carts, many=True)
+        return Response(serializer.data)
+
+    def post(self, request: WSGIRequest):
+        serializer = CartSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProductList(APIView):
     def get(self, request: WSGIRequest):
         products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)
@@ -17,109 +127,5 @@ class ProductView(APIView):
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-        else:
-            return Response(serializer.errors)
-        return Response(serializer.data)
-
-
-class ProductDetailView(APIView):
-    def get_object(self, pk):
-        try:
-            return Product.objects.get(id=pk)
-        except Product.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-    def get(self, request: WSGIRequest, pk):
-        product = self.get_object(pk)
-        serializer = ProductSerializer(product, many=False)
-        return Response(serializer.data)
-
-    def put(self, request: WSGIRequest, pk):
-        product = self.get_object(pk)
-        serializer = ProductSerializer(instance=product, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-        return Response(serializer.data)
-
-    def delete(self, request: WSGIRequest, pk):
-        product = self.get_object(pk)
-        product.delete()
-        return Response('Item successfully deleted!')
-
-
-class ManufacturerView(APIView):
-    def get(self, request: WSGIRequest):
-        manufacturers = Manufacturer.objects.all()
-        serializer = ManufacturerSerializer(manufacturers, many=True)
-        return Response(serializer.data)
-
-    def post(self, request: WSGIRequest):
-        serializer = ManufacturerSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return Response(serializer.errors)
-        return Response(serializer.data)
-
-
-class ManufacturerDetailView(APIView):
-    def get_object(self, pk):
-        try:
-            return Manufacturer.objects.get(id=pk)
-        except Manufacturer.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-    def get(self, request: WSGIRequest, pk):
-        manufacturer = self.get_object(pk)
-        serializer = ManufacturerSerializer(manufacturer, many=False)
-        return Response(serializer.data)
-
-    def put(self, request: WSGIRequest, pk):
-        manufacturer = self.get_object(pk)
-        serializer = ManufacturerSerializer(instance=manufacturer, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-        return Response(serializer.data)
-
-    def delete(self, request: WSGIRequest, pk):
-        manufacturer = self.get_object(pk)
-        manufacturer.delete()
-        return Response('Item successfully deleted!')
-
-
-class CategoryView(APIView):
-    def get(self, request: WSGIRequest):
-        categories = Category.objects.all()
-        serializer = CategorySerializer(categories, many=True)
-        return Response(serializer.data)
-
-    def post(self, request: WSGIRequest):
-        serializer = CategorySerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-        return Response(serializer.data)
-
-
-class CategoryDetailView(APIView):
-    def get_object(self, pk):
-        try:
-            return Category.objects.get(id=pk)
-        except Category.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-    def get(self, request: WSGIRequest, pk):
-        category = self.get_object(pk)
-        serializer = CategorySerializer(category, many=False)
-        return Response(serializer.data)
-
-    def put(self, request: WSGIRequest, pk):
-        category = self.get_object(pk)
-        serializer = CategorySerializer(instance=category, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-        return Response(serializer.data)
-
-    def delete(self, request: WSGIRequest, pk):
-        category = self.get_object(pk)
-        category.delete()
-        return Response('Item successfully deleted!')
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
