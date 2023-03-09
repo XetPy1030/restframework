@@ -1,31 +1,27 @@
 from rest_framework import serializers
 
-from myapp.models import Product, Cart, CartItem
+from .models import Directors, Genres, Films, Afisha
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class DirectorsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Product
+        model = Directors
         fields = '__all__'
 
 
-class CartItemSerializer(serializers.ModelSerializer):
-    product = ProductSerializer()
-
+class GenresSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CartItem
-        fields = ('id', 'product', 'quantity', 'cart')
+        model = Genres
+        fields = '__all__'
 
 
-class CartSerializer(serializers.ModelSerializer):
+class FilmsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Cart
-        fields = ('id', 'products')
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['total_price'] = instance.total_price()
+        model = Films
+        fields = '__all__'
 
 
-
-        return data
+class AfishaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Afisha
+        fields = '__all__'

@@ -1,17 +1,14 @@
 from django.urls import path
 
-from .views import CartView, CartItemView, ProductView, CartItemList, CartList, ProductList
+from .views import DirectorsListAPIView, GenresListAPIView, FilmsListAPIView, AfishaListAPIView, DirectorsRetrieveUpdateDestroyAPIView, GenresRetrieveUpdateDestroyAPIView, FilmsRetrieveUpdateDestroyAPIView, AfishaRetrieveUpdateDestroyAPIView
 
 urlpatterns = [
-    path('cart/', CartView.as_view()),
-    path('cart/<int:pk>/', CartView.as_view()),
-    path('cartitem/', CartItemView.as_view()),
-    path('cartitem/<int:pk>/', CartItemView.as_view()),
-    path('product/', ProductView.as_view()),
-    path('product/<int:pk>/', ProductView.as_view()),
-    path('cartitemlist/', CartItemList.as_view()),
-    path('cartlist/', CartList.as_view()),
-    path('productlist/', ProductList.as_view()),
-
-
+    path('directors/', DirectorsListAPIView.as_view()),
+    path('genres/', GenresListAPIView.as_view()),
+    path('films/', FilmsListAPIView.as_view()),
+    path('afisha/', AfishaListAPIView.as_view()),
+    path('directors/<int:pk>/', DirectorsRetrieveUpdateDestroyAPIView.as_view()),
+    path('genres/<int:pk>/', GenresRetrieveUpdateDestroyAPIView.as_view()),
+    path('films/<int:pk>/', FilmsRetrieveUpdateDestroyAPIView.as_view()),
+    path('afisha/<int:pk>/', AfishaRetrieveUpdateDestroyAPIView.as_view()),
 ]
