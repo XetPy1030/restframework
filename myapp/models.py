@@ -7,3 +7,4 @@ class Book(models.Model):
     annotation = models.TextField()
     author = models.CharField(max_length=255)
     year = models.IntegerField()
+
