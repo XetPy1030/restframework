@@ -13,6 +13,13 @@ def books(request):
     return Response(serializer.data)
 
 
+@api_view(["GET"])
+def book(request: WSGIRequest, pk):
+    book_ = Book.objects.get(pk=pk)
+    serializer = BookSerializer(book_)
+    return Response(serializer.data)
+
+
 @api_view(["POST"])
 def create_book(request: WSGIRequest):
     serializer = BookSerializer(data=request.data)
